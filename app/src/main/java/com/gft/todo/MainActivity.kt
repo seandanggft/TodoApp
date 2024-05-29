@@ -1,38 +1,54 @@
 package com.gft.todo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.gft.todo.databinding.ActivityMainBinding
-import com.gft.todo.ui.theme.AppTheme
+import com.gft.todo.ui.theme.ComposeAppTheme
 import com.gft.todo.ui.view.main.MainScreen
+import com.gft.todo.ui.view.main.MainViewModel
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    // FIXME: set to false if using XML
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    lateinit var appComponent: ApplicationComponent
+    @Inject
+    lateinit var mainViewModel: MainViewModel
+
+    // FIXME: set to true if using XML
     private val useCompose = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        appComponent = (applicationContext as TodoApp).appComponent
+        appComponent.inject(this)
         super.onCreate(savedInstanceState)
         if (useCompose) {
+            enableEdgeToEdge()
             setContent {
-                AppTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        MainScreen()
-                    }
+                ComposeAppTheme {
+                    MainScreen(viewModel = mainViewModel)
                 }
             }
         } else {
             binding = ActivityMainBinding.inflate(layoutInflater)
             setContentView(binding.root)
+            setSupportActionBar(binding.toolbar)
+            val navController = findNavController(R.id.nav_host_fragment_content_main)
+            appBarConfiguration = AppBarConfiguration(navController.graph)
+            setupActionBarWithNavController(navController, appBarConfiguration)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }

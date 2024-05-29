@@ -1,19 +1,26 @@
 package com.gft.todo.ui.view.main
 
+import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.gft.todo.R
+import com.gft.todo.MainActivity
 import com.gft.todo.databinding.FragmentMainBinding
+import javax.inject.Inject
 
-
-class MainFragment: Fragment(R.layout.fragment_main) {
-    private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var mainViewModel: MainViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainActivity).appComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

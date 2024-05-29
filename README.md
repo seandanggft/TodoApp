@@ -17,5 +17,4 @@ API: https://jsonplaceholder.typicode.com/todos
 
 - The app should handle errors gracefully and display an appropriate message to the user if an error occurs.
 - Use Kotlin Coroutines to handle async
-- Use Jetpack Compose instead of XML to build UI
 - Have Unit Tests
